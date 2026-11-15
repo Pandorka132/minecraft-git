@@ -1,5 +1,6 @@
 package com.github.pandorka132.git;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,6 +14,7 @@ public class Events {
     Path savePath;
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
+        if (!(event.getLevel() instanceof ServerLevel)) { return; }
         LevelAccessor level = event.getLevel();
         Path savePath = level.getServer()
                 .getWorldPath(LevelResource.ROOT);

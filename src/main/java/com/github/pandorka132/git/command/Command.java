@@ -16,7 +16,7 @@ public class Command {
                         .then(Commands.literal("commit")
                                 .then(Commands.argument("message", StringArgumentType.string())
                                         .executes(context -> {
-
+                                            GitActions.commit(String.valueOf(context));
                                             return Command.SINGLE_SUCCESS;
                                         })
                                 )

@@ -13,8 +13,12 @@ import static com.github.pandorka132.git.Git.jgit;
 
 public class GitActions {
 
-    public static InitCommand init(){
-        return null;
+    public static void commit(String message) {
+        jgit.commit().setMessage(message);
+    }
+
+    public static void addFiles() {
+        jgit.add().addFilepattern(".");
     }
 
     public static void loadGit(Path worldDir){
