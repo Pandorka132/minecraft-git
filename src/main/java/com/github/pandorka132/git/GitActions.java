@@ -1,5 +1,6 @@
 package com.github.pandorka132.git;
 
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -18,9 +19,19 @@ public class GitActions {
         try {
             commit = Git.jgit.commit().setMessage(message).call();
         } catch (GitAPIException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to commit! ", e);
         }
         return commit;
+    }
+    public static void reset(RevCommit commit) {
+        try {
+            jgit.reset()
+                    .setMode(ResetCommand.ResetType.HARD)
+                    .setRef(commit.getId().getName())
+                    .call();
+        } catch (GitAPIException e) {
+            throw new RuntimeException("Failed to reset!", e);
+        }
     }
 
     public static void addFiles() {

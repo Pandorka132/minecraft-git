@@ -30,6 +30,11 @@ public class Command {
                                         })
                                 )
                         )
+                        .then(Commands.literal("reset")
+                                .executes(context -> {
+
+                                })
+                        )
         );
     }
 }
