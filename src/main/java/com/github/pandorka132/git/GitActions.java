@@ -12,7 +12,6 @@ import static com.github.pandorka132.git.Git.jgit;
 
 
 public class GitActions {
-
     public static RevCommit commit(String message) {
         addFiles();
         RevCommit commit;
@@ -23,6 +22,7 @@ public class GitActions {
         }
         return commit;
     }
+
     public static void reset(RevCommit commit) {
         try {
             jgit.reset()
