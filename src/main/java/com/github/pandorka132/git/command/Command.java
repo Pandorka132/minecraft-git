@@ -24,7 +24,7 @@ public class Command {
                                             String message = context.getArgument("message", String.class);
                                             ServerPlayer player = context.getSource().getPlayerOrException();
 
-                                            RevCommit commit = GitActions.commit(message, context.getSource().getPlayerOrException());
+                                            RevCommit commit = GitActions.commit(message);
 
                                             player.sendSystemMessage(Component.literal("New commit: " + commit.getShortMessage()));
                                             return Command.SINGLE_SUCCESS;
