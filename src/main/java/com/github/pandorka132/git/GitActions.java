@@ -14,6 +14,7 @@ import static com.github.pandorka132.git.Git.jgit;
 public class GitActions {
 
     public static void commit(String message) {
+        addFiles();
         jgit.commit().setMessage(message);
     }
 

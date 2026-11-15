@@ -18,7 +18,6 @@ public class Events {
         LevelAccessor level = event.getLevel();
         Path savePath = level.getServer()
                 .getWorldPath(LevelResource.ROOT);
-        Path jgitDir = savePath.resolve(".git");
         GitActions.loadGit(savePath);
         LOGGER.info("Git loaded!");
     }
