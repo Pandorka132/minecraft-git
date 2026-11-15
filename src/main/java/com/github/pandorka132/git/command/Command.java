@@ -1,6 +1,6 @@
 package com.github.pandorka132.git.command;
 
-import com.github.pandorka132.git.actions.Git;
+import com.github.pandorka132.git.GitActions;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.Commands;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,7 +16,7 @@ public class Command {
                         .then(Commands.literal("commit")
                                 .then(Commands.argument("message", StringArgumentType.string())
                                         .executes(context -> {
-                                            Git.commit();
+
                                             return Command.SINGLE_SUCCESS;
                                         })
                                 )

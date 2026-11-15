@@ -6,7 +6,7 @@ plugins {
 
 modSettings {
     clientOptions {
-        fov = 90
+        fov = 100
         guiScale = 3
         narrator = false
         darkBackground = true
@@ -39,4 +39,10 @@ publishMods {
         server = true
         if (mod.isFabric) requires("fabric-api")
     }
+}
+
+dependencies {
+    implementation("org.eclipse.jgit:org.eclipse.jgit:7.8.1.202611041320-r")
+    forgeRuntimeLibrary("org.eclipse.jgit:org.eclipse.jgit:7.8.1.202611041320-r")
+    include("org.eclipse.jgit:org.eclipse.jgit:7.8.1.202611041320-r")
 }
