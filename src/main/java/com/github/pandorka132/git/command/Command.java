@@ -1,7 +1,7 @@
 package com.github.pandorka132.git.command;
 
 import com.github.pandorka132.git.Git;
-import com.github.pandorka132.git.GitActions;
+import com.github.pandorka132.git.Actions.GitActions;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -77,7 +77,11 @@ public class Command {
                                             if (found == null) {
                                                 throw new IllegalArgumentException("Commit not found!");
                                             }
-                                            context.getSource().getPlayerOrException().sendSystemMessage(Component.literal("Commit: " + found.getShortMessage()));
+                                            //context.getSource().getPlayerOrException().sendSystemMessage(Component.literal("Commit: " + found.getShortMessage()));
+
+                                            context.getSource().getPlayerOrException().sendSystemMessage(Component.literal("Starting reset"));
+                                            GitActions.reset(context.getSource(), found);
+
                                             return Command.SINGLE_SUCCESS;
                                         })
                                 )

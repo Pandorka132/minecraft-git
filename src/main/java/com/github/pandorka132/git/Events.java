@@ -1,22 +1,25 @@
 package com.github.pandorka132.git;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.LevelAccessor;
+import com.github.pandorka132.git.Actions.GitActions;
 import net.minecraft.world.level.storage.LevelResource;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 import java.nio.file.Path;
 
 import static com.github.pandorka132.git.Git.LOGGER;
-
+@EventBusSubscriber(value = Dist.CLIENT)
 public class Events {
     Path savePath;
     @SubscribeEvent
-    public static void onLevelLoad(LevelEvent.Load event) {
-        if (!(event.getLevel() instanceof ServerLevel)) { return; }
-        LevelAccessor level = event.getLevel();
-        Path savePath = level.getServer()
+    public static void onLevelLoad(
+            ServerStartedEvent event) {
+
+        //if (!(event.getLevel() instanceof ServerLevel)) { return; }
+        //LevelAccessor level = event.getLevel();
+        Path savePath = event.getServer()
                 .getWorldPath(LevelResource.ROOT);
         GitActions.loadGit(savePath);
         LOGGER.info("Git loaded!");

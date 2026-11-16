@@ -1,6 +1,8 @@
 package com.github.pandorka132.git;
 
 import com.github.pandorka132.git.command.Command;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
