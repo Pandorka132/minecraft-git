@@ -1,15 +1,15 @@
 package com.github.pandorka132.git.Actions;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-public class RestoreScreen extends Screen {
+public class RestoreScreen extends GenericDirtMessageScreen {
     private volatile Component message = Component.literal("Saving world...");
 
     public RestoreScreen() {
-        super(Component.literal("Restoring world"));
+        super(Component.literal("Saving world..."));
     }
 
     public void setMessage(String message) {
@@ -44,13 +44,6 @@ public class RestoreScreen extends Screen {
                 height / 2,
                 0xFFFFFF
         );
-
-        super.render(graphics, mouseX, mouseY, partialTick);
-    }
-
-    @Override
-    public boolean shouldCloseOnEsc() {
-        return false;
     }
 
     @Override
