@@ -1,11 +1,11 @@
 package com.github.pandorka132.git.Actions;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
+import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-public class RestoreScreen extends GenericDirtMessageScreen {
+public class RestoreScreen extends GenericMessageScreen {
     private volatile Component message = Component.literal("Saving world...");
 
     public RestoreScreen() {
