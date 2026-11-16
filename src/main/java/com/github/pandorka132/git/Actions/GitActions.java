@@ -1,7 +1,6 @@
 package com.github.pandorka132.git.Actions;
 
 import com.github.pandorka132.git.Git;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -48,28 +47,34 @@ public class GitActions {
 
     public static void reset(CommandSourceStack source, RevCommit commit) {
         MinecraftServer server = source.getServer();
-        /*
+
         if (!server.isSingleplayer()) {
-            throw new IllegalStateException("World reset is only supported in singleplayer.");
+            throw new IllegalStateException(
+                    "World reset is only supported in singleplayer."
+            );
         }
 
         if (FMLEnvironment.dist != Dist.CLIENT) {
-            throw new IllegalStateException("World reset requires a client.");
+            throw new IllegalStateException(
+                    "World reset requires a client."
+            );
         }
-        */
 
         String worldName = server.getWorldPath(LevelResource.ROOT)
                 .getFileName()
                 .toString();
+        String commitId = commit.getId().getName();
 
-        try {
-            jgit.reset()
-                    .setMode(ResetCommand.ResetType.HARD)
-                    .setRef(commit.getId().getName())
-                    .call();
-        } catch (GitAPIException e) {
-            throw new RuntimeException("Failed to reset!", e);
-        }
+        ClientReset.begin(server, worldName, () -> {
+            try {
+                jgit.reset()
+                        .setMode(ResetCommand.ResetType.HARD)
+                        .setRef(commitId)
+                        .call();
+            } catch (GitAPIException e) {
+                throw new RuntimeException("Failed to reset!", e);
+            }
+        });
     }
 
     public static void addFiles() {
