@@ -61,6 +61,7 @@ public class GitActions {
         }
 
         String worldName = server.getWorldPath(LevelResource.ROOT)
+                .getParent()
                 .getFileName()
                 .toString();
         String commitId = commit.getId().getName();
