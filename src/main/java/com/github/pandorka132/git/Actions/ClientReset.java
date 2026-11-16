@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -45,6 +46,14 @@ public final class ClientReset {
             minecraft.setScreen(screen);
             server.execute(() -> server.halt(false));
         });
+    }
+
+    @SubscribeEvent
+    public static void onScreenOpening(ScreenEvent.Opening event) {
+        Pending operation = pending;
+        if (operation != null && event.getNewScreen() != operation.screen()) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
