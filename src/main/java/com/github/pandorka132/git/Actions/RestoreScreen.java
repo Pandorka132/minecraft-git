@@ -52,4 +52,9 @@ public class RestoreScreen extends Screen {
     public boolean shouldCloseOnEsc() {
         return false;
     }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
 }
