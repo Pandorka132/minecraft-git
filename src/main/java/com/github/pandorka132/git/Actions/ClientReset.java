@@ -43,7 +43,7 @@ public final class ClientReset {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.execute(() -> {
             minecraft.setScreen(screen);
-            server.execute(() -> server.stop(false));
+            server.execute(() -> server.halt(false));
         });
     }
 
