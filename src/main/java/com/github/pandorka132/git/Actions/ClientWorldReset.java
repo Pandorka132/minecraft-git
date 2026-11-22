@@ -13,36 +13,6 @@ public final class ClientWorldReset {
 
     private ClientWorldReset() {}
 
-    public static void begin(
-            MinecraftServer server,
-            String worldName,
-            Runnable resetOperation
-    ) {
-        Minecraft minecraft = Minecraft.getInstance();
-
-        minecraft.execute(() -> {
-            if (pending != null) {
-                throw new IllegalStateException("A world reset is already running.");
-            }
-
-            if (minecraft.getSingleplayerServer() != server) {
-                throw new IllegalStateException("The requested server is not the active integrated server.");
-            }
-
-            RestoreScreen screen = new RestoreScreen();
-
-            pending = new PendingReset(
-                    server,
-                    worldName,
-                    resetOperation,
-                    screen
-            );
-
-            // A vanilla disconnect menti és szabályosan leállítja az integrált szervert.
-            minecraft.disconnect(screen);
-        });
-    }
-
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         PendingReset reset = pending;
