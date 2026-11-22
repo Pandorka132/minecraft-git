@@ -14,14 +14,16 @@ import static com.github.pandorka132.git.Git.LOGGER;
 public class Events {
     Path savePath;
     @SubscribeEvent
-    public static void onLevelLoad(
-            ServerStartedEvent event) {
+    public static void onLevelLoad(ServerStartedEvent event) {
 
         //if (!(event.getLevel() instanceof ServerLevel)) { return; }
         //LevelAccessor level = event.getLevel();
         Path savePath = event.getServer()
                 .getWorldPath(LevelResource.ROOT);
-        GitActions.loadGit(savePath);
-        LOGGER.info("Git loaded!");
+
+        if (Git.jgit == null) {
+            GitActions.loadGit(savePath);
+            LOGGER.info("Git loaded!");
+        }
     }
 }

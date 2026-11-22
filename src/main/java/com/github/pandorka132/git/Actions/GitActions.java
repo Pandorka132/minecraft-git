@@ -25,7 +25,9 @@ import static com.github.pandorka132.git.Git.jgit;
 
 
 public class GitActions {
-    public static RevCommit commit(String message) {
+    public static RevCommit commit(String message, MinecraftServer server) {
+        server.saveEverything(false, true, false);
+
         long start = System.nanoTime();
         addFiles();
         long elapsed = System.nanoTime() - start;
@@ -35,6 +37,11 @@ public class GitActions {
 
         RevCommit commit;
         try {
+            jgit.add()
+                    .addFilepattern(".")
+                    .setUpdate(true)
+                    .call();
+
             commit = Git.jgit.commit().setMessage(message).call();
         } catch (GitAPIException e) {
             throw new RuntimeException("Failed to commit! ", e);
@@ -128,6 +135,6 @@ public class GitActions {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return Set.of();
+        return untrackedFiles;
     }
 }
