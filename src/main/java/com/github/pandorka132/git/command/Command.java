@@ -1,6 +1,5 @@
 package com.github.pandorka132.git.command;
 
-import com.github.pandorka132.git.Git;
 import com.github.pandorka132.git.Actions.GitActions;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.Commands;
@@ -8,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
@@ -42,54 +40,46 @@ public class Command {
                         .then(Commands.literal("reset")
                                 .then(Commands.argument("commit", StringArgumentType.greedyString())
                                         .suggests((context, builder) -> {
-                                                    try {
-                                                        String remaining = builder.getRemainingLowerCase();
-                                                        StringRange range = StringRange.between(
-                                                                builder.getStart(),
-                                                                builder.getInput().length()
-                                                        );
-                                                        List<Suggestion> suggestions = new ArrayList<>();
+                                                    String remaining = builder.getRemainingLowerCase();
+                                                    StringRange range = StringRange.between(
+                                                            builder.getStart(),
+                                                            builder.getInput().length()
+                                                    );
+                                                    List<Suggestion> suggestions = new ArrayList<>();
 
-                                                        for (RevCommit commit : Git.jgit.log().call()) {
-                                                            String shortHash = commit.getId().getName().substring(0, 6);
-                                                            String suggestion = shortHash + "_" + commit.getShortMessage();
+                                                    for (RevCommit commit : GitActions.getCommits()) {
+                                                        String shortHash = commit.getId().getName().substring(0, 6);
+                                                        String suggestion = shortHash + ":" + commit.getShortMessage();
 
-                                                            if (suggestion.toLowerCase(Locale.ROOT).startsWith(remaining)) {
-                                                                suggestions.add(new Suggestion(range, suggestion));
-                                                            }
+                                                        if (suggestion.toLowerCase(Locale.ROOT).startsWith(remaining)) {
+                                                            suggestions.add(new Suggestion(range, suggestion));
                                                         }
-
-                                                        return CompletableFuture.completedFuture(
-                                                                new Suggestions(range, suggestions)
-                                                        );
-                                                    } catch (GitAPIException e) {
-                                                        throw new RuntimeException(e);
                                                     }
+
+                                                    return CompletableFuture.completedFuture(
+                                                            new Suggestions(range, suggestions)
+                                                    );
                                                 }
                                         ).executes(context -> {
                                             String input = context.getArgument("commit", String.class);
-                                            int separator = input.indexOf('_');
+                                            int separator = input.indexOf(':');
                                             if (separator != 6) {
-                                                throw new IllegalArgumentException("Invalid commit format! Expected shortHash_message.");
+                                                throw new IllegalArgumentException("Invalid commit format! Expected shortHash:message.");
                                             }
 
                                             String hashPrefix = input.substring(0, separator);
                                             String message = input.substring(separator + 1);
                                             RevCommit found = null;
 
-                                            try {
-                                                for (RevCommit commit : Git.jgit.log().call()) {
-                                                    if (commit.getId().getName().startsWith(hashPrefix)
-                                                            && commit.getShortMessage().equals(message)) {
-                                                        if (found != null) {
-                                                            throw new IllegalArgumentException("Ambiguous commit hash!");
-                                                        }
-
-                                                        found = commit;
+                                            for (RevCommit commit : GitActions.getCommits()) {
+                                                if (commit.getId().getName().startsWith(hashPrefix)
+                                                        && commit.getShortMessage().equals(message)) {
+                                                    if (found != null) {
+                                                        throw new IllegalArgumentException("Ambiguous commit hash!");
                                                     }
+
+                                                    found = commit;
                                                 }
-                                            } catch (GitAPIException e) {
-                                                throw new RuntimeException(e);
                                             }
 
                                             if (found == null) {

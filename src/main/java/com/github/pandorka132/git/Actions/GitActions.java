@@ -8,8 +8,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
@@ -17,7 +19,9 @@ import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.github.pandorka132.git.Git.LOGGER;
@@ -85,6 +89,27 @@ public class GitActions {
         });
     }
 
+    public static List<RevCommit> getCommits() {
+        List<RevCommit> commits = new ArrayList<>();
+
+        RevWalk walk;
+        try {
+            walk = (RevWalk) jgit.log().call();
+        } catch (NoHeadException e) {
+            return commits;
+        } catch (GitAPIException e) {
+            throw new RuntimeException("Failed to read commits!", e);
+        }
+
+        try (walk) {
+            for (RevCommit commit : walk) {
+                commits.add(commit);
+            }
+        }
+
+        return commits;
+    }
+
     public static void addFiles() {
         try {
             Set<String> untrackedFiles = getUntrackedFiles();
@@ -96,9 +121,7 @@ public class GitActions {
 
     public static void loadGit(Path worldDir){
         Path gitDir = worldDir.resolve(".git");
-        if(!(jgit == null)) {
-            return;
-        }
+
         if (Files.isDirectory(gitDir)) {
             try {
                 jgit = org.eclipse.jgit.api.Git.open(worldDir.toFile());

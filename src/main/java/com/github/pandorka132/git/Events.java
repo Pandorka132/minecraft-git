@@ -10,20 +10,29 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import java.nio.file.Path;
 
 import static com.github.pandorka132.git.Git.LOGGER;
+import static com.github.pandorka132.git.Git.jgit;
+
 @EventBusSubscriber(value = Dist.CLIENT)
 public class Events {
     Path savePath;
     @SubscribeEvent
     public static void onLevelLoad(ServerStartedEvent event) {
-
-        //if (!(event.getLevel() instanceof ServerLevel)) { return; }
-        //LevelAccessor level = event.getLevel();
-        Path savePath = event.getServer()
+        Path relativeSavePath = event.getServer()
                 .getWorldPath(LevelResource.ROOT);
+        Path savePath = relativeSavePath.toAbsolutePath().normalize();
 
-        if (Git.jgit == null) {
-            GitActions.loadGit(savePath);
-            LOGGER.info("Git loaded!");
+        if (Git.jgit!=null){
+            Path gitPath = Git.jgit.getRepository().getDirectory().toPath().toAbsolutePath().normalize().getParent();
+            if (gitPath.equals(savePath)){
+                LOGGER.info("Git already loaded!");
+                return;
+            } else {
+                LOGGER.info("Closing other world's git");
+                jgit.close();
+            }
         }
+
+        GitActions.loadGit(relativeSavePath);
+        LOGGER.info("Git loaded!");
     }
 }
